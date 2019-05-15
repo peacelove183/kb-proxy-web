@@ -7,6 +7,8 @@ import Quasar from './plugins/quasar'
 import store from './store'
 import '../static/css/import_css'
 import Validate from './plugins/vuelidate'
+import PpNotify from './plugins/PpNotify'
+import ClipBoard from './plugins/clipboard'
 
 Vue.config.productionTip = false
 
@@ -17,7 +19,7 @@ const app = ({
   components: {App},
   template: '<App/>'
 });
-[Quasar,Validate].forEach(plugin => plugin({
+[Quasar, Validate, PpNotify, ClipBoard].forEach(plugin => plugin({
   app,
   router,
   store,

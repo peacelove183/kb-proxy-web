@@ -1,4 +1,5 @@
-import JsonEditor from '../../plugins/jsoneditor/VueJsoneditor'
+//import JsonEditor from '../../plugins/jsoneditor/VueJsoneditor'
+import VueEditor from '../../plugins/editor/vue-editor/vue-editor'
 
 export default {
   name: 'comp_response_json',
@@ -7,14 +8,11 @@ export default {
   }),
   methods: {
     render_json_response(h) {
-      return h(JsonEditor, {
+      return h(VueEditor, {
         props: {
-          plus: false,
-          options: {
-            mode: "code",
-          },
-          height: '490px',
-          value: this.response
+          height: '450px',
+          value: this.response,
+          disable: true
         }
       })
     },
@@ -24,7 +22,7 @@ export default {
   },
   render(h) {
     return h('div', {
-      staticClass:'q-pb-md'
+      staticClass: 'q-pb-md'
     }, [
       this.render_json_response(h)
     ])

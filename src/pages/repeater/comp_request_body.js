@@ -1,6 +1,8 @@
-import JsonEditor from '../../plugins/jsoneditor/VueJsoneditor'
+//import JsonEditor from '../../plugins/jsoneditor/VueJsoneditor'
 import BodyFormTable from './comp_request_body_form_table'
 import {BodyTypeOptions} from "../../utils/repeater_dictionary";
+import JsonEditor from '../../plugins/editor/vue-editor/vue-editor'
+import {string_to_json} from "../../utils/data_format_utils";
 
 export default {
   name: 'comp_request_body',
@@ -12,7 +14,7 @@ export default {
   methods: {
     render_type_radio(h) {
       return h('div', {
-        staticClass: 'text-left q-pt-md q-pb-md'
+        staticClass: 'text-left q-pt-md q-pb-md bg-grey-3'
       }, [
         h('q-radio', {
           props: {
@@ -45,17 +47,15 @@ export default {
     render_json_body(h) {
       return h(JsonEditor, {
         props: {
-          plus: false,
-          options: {
-            mode: "code",
-          },
           height: '300px',
-          value: this.request_json
+          value: this.request_json,
+          toolbar: false,
+          type:'JSON'
         },
         on: {
           input: (v) => {
             this.request_json = v
-            this.$emit('request_json_input', v)
+            this.$emit('request_json_input', string_to_json(v))
           }
         }
       })
