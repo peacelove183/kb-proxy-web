@@ -64,9 +64,9 @@ export default {
     },
     render_cookies_catalog(h) {
       return h('div', {
-        staticClass: 'overflow-hidden q-table-dense pp-border-4'
+        staticClass: 'overflow-hidden q-table-dense'
       }, [
-        this.cookies && this.cookies.length > 0 ? h('table', {staticClass: 'q-table q-table-horizontal-separator no-shadow q-table-dense'}, [
+        this.cookies && this.cookies.length > 0 ? h('table', {staticClass: 'q-table q-table-horizontal-separator no-shadow q-table-dense pp-border-4'}, [
           this.render_cookie_table_cookie(h),
           this.render_cookie_catalog_body(h)
         ]) : h('div', {

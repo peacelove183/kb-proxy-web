@@ -295,12 +295,16 @@ a {
 }
 
 .jsoneditor-menu {
-  background-color: var(--q-color-grey-5) !important;
-  border: solid 1px var(--q-color-grey-5) !important;
+  background-color: var(--q-color-grey-4) !important;
+  border: solid 1px var(--q-color-grey-4) !important;
 }
 
 .jsoneditor {
   border: solid 1px var(--q-color-grey-4) !important;
+}
+.ace-jsoneditor .ace_gutter {
+  background: var(--q-color-grey-3) !important;
+  color: #333;
 }
 
 .q-dot {

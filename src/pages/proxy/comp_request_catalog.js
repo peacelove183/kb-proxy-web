@@ -179,9 +179,9 @@ export default {
       this.render_request_catalog(h),
     ])
   },
-  deactivated() {
-    this.stop_request_list_interval();
-  },
+  // deactivated() {
+  //   this.stop_request_list_interval();
+  // },
   activated() {
     this.proxyStatus && this.start_request_list_interval();
   }

@@ -73,7 +73,8 @@ export default {
             }
           }, [h('div', {
             style: {
-              width: '15%'
+              maxWidth: '30%',
+              minWidth:'15%'
             },
             staticClass: 'q-mr-sm font-10 text-weight-bold text-' + MethodEnums[history.method].color
           }, history.method),
