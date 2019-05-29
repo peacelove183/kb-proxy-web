@@ -2,7 +2,6 @@ import LeftDetail from './comp_left_detail'
 import RightDetail from './comp_right_detail'
 import store from '../../store'
 import ActiveApiTabs from './comp_active_api_tabs'
-import {header_map_to_arr, string_to_json} from '../../utils/data_format_utils'
 import localStorage from '../../utils/local_storage_utils'
 
 export default {
@@ -12,7 +11,7 @@ export default {
     hidden_list_width: '99.5%',
   }),
   computed: {
-    from_mock_to_repeater() {
+    from_proxy_to_repeater() {
       if (this.$route.path == "/repeater")
         return (new Date()).getTime() >= this.$route.query.timestamp && (new Date()).getTime() - this.$route.query.timestamp <= 1 * 60 * 1000
       return false
@@ -22,11 +21,11 @@ export default {
     }
   },
   watch: {
-    from_mock_to_repeater: {
+    from_proxy_to_repeater: {
       immediate: true,
       handler: function (nv, ov) {
         if (nv) {
-          setTimeout(this.from_mock_add, 300)
+          setTimeout(this.from_proxy_add, 300)
         }
       }
     }
@@ -38,7 +37,7 @@ export default {
         style: {
           width: '100%',
           maxHeight: '100%',
-          minHeight: '100vh '
+          minHeight:'833px'
         },
       }, [
         h(LeftDetail, {
@@ -110,7 +109,7 @@ export default {
     select_request(v) {
 
     },
-    from_mock_add() {
+    from_proxy_add() {
       let model = {
         url: store.state.repeater.url,
         method: store.state.repeater.method,
@@ -124,7 +123,7 @@ export default {
   },
   render(h) {
     return h('div', {
-        staticClass: 'col-grow shadow-7 column',
+        staticClass: 'col-grow shadow-0 column',
         style: {
           borderRadius: '3px',
           fontSize: '13px',

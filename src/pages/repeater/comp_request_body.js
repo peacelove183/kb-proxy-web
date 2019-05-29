@@ -14,7 +14,7 @@ export default {
   methods: {
     render_type_radio(h) {
       return h('div', {
-        staticClass: 'text-left q-pt-md q-pb-md bg-grey-3'
+        staticClass: 'text-left q-pt-md q-pb-md bg-grey-1 pp-border-4-no-bottom'
       }, [
         h('q-radio', {
           props: {

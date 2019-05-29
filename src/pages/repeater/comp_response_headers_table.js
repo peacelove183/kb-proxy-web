@@ -34,8 +34,10 @@ export default {
     },
     render_headers_catalog(h) {
       return h('div', {
-        staticClass: 'overflow-hidden q-table-dense'
-      }, [
+        staticClass: 'q-table-dense pp-border-4 scroll',
+        style:{
+          height:'100%'
+        },      }, [
         this.headers && this.headers.length > 0 ? h('table', {staticClass: 'q-table q-table-horizontal-separator no-shadow q-table-dense pp-border-4'}, [
           this.render_header_table_header(h),
           this.render_header_catalog_body(h)

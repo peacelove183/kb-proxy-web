@@ -116,7 +116,10 @@ export default {
     },
     render_params_catalog(h) {
       return h('div', {
-        staticClass: 'overflow-hidden q-table-dense pp-border-4'
+        staticClass: 'q-table-dense pp-border-4 scroll',
+        style: {
+          height: '100%'
+        },
       }, [
         h('table', {staticClass: 'q-table q-table-horizontal-separator no-shadow q-table-dense'}, [
           this.render_param_table_header(h),

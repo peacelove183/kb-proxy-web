@@ -1,12 +1,7 @@
 export default {
-  name: 'comp_request_headers_table',
+  name: 'comp_response_headers_table',
   data: () => ({
     headers: [],
-    default_header: {
-      key: null,
-      value: null,
-      description: null
-    }
   }),
   props: {
     default_headers: {
@@ -14,7 +9,23 @@ export default {
       require: false,
       default: []
     },
+    disable: {
+      type: Boolean,
+      require: false,
+      default: false
+    }
   },
+  // watch: {
+  //   default_headers: {
+  //     immediate: true,
+  //     handler: function (nv, ov) {
+  //       console.log("nv:"+nv)
+  //       if (nv !== ov && nv !== this.headers) {
+  //         this.headers = nv
+  //       }
+  //     }
+  //   }
+  // },
   methods: {
     render_header_table_header(h) {
       return h('thead', [
@@ -25,9 +36,6 @@ export default {
           h('th', {
             staticClass: 'text-left',
           }, 'VALUE'),
-          h('th', {
-            staticClass: 'text-left',
-          }, 'DESCRIPTION'),
           h('th', {
             staticClass: 'items-center',
             style: {
@@ -42,16 +50,24 @@ export default {
       if (!this.headers || this.headers.length <= 0) {
         this.headers = []
         this.headers.push({
-          ...this.default_header
+          ...{
+            key: null,
+            value: null,
+            description: null
+          }
         });
       }
       let lastHeader = this.headers[this.headers.length - 1]
       if (lastHeader.key !== null || lastHeader.value !== null || lastHeader.description !== null) {
         this.headers.push({
-          ...this.default_header
+          ...{
+            key: null,
+            value: null,
+            description: null
+          }
         });
       }
-      return h('tbody', [this.headers.map(header => [
+      return h('tbody', {}, [this.headers.map(header => [
           this.render_header_item(h, header, ++count)
         ]
       )])
@@ -64,7 +80,8 @@ export default {
             props: {
               value: header.key,
               placeholder: 'Key',
-              hideUnderline: true
+              hideUnderline: true,
+              disable: this.disable
             },
             on: {
               input: (v) => this.input_event(count, 'key', v)
@@ -77,30 +94,20 @@ export default {
             props: {
               value: header.value,
               placeholder: 'Value',
-              hideUnderline: true
+              hideUnderline: true,
+              disable: this.disable
             },
             on: {
               input: (v) => this.input_event(count, 'value', v)
             }
           })
         ]),
-        h('td', {staticClass: 'text-left'}, [h('q-input', {
-          staticClass: 'pp-search-input',
-          props: {
-            value: header.description,
-            placeholder: 'Description',
-            hideUnderline: true,
-          },
-          on: {
-            input: (v) => this.input_event(count, 'description', v)
-          }
-        })]),
         h('td', {
           staticClass: 'items-center text-faded',
           style: {
             width: '10px'
           }
-        }, [this.headers.length > 1 ? h('q-icon', {
+        }, [this.headers.length > 1 && !this.disable ? h('q-icon', {
           staticClass: 'cursor-pointer icon-red-hover',
           props: {
             name: 'clear',
@@ -119,8 +126,8 @@ export default {
     render_headers_catalog(h) {
       return h('div', {
         staticClass: 'q-table-dense pp-border-4 scroll',
-        style:{
-          height:'100%'
+        style: {
+          height: '100%'
         },
       }, [
         h('table', {staticClass: 'q-table q-table-horizontal-separator no-shadow q-table-dense'}, [
@@ -130,7 +137,11 @@ export default {
     },
     input_event(count, type, value) {
       count === this.headers.length && this.headers.push({
-        ...this.default_header
+        ...{
+          key: null,
+          value: null,
+          description: null
+        }
       })
       this.update_headers_ob(count, type, value)
       this.$emit('input', this.headers)
@@ -149,7 +160,8 @@ export default {
     ])
   },
   mounted() {
-    if (typeof this.default_headers !== 'undefined')
+    if (typeof this.default_headers !== 'undefined') {
       this.headers = this.default_headers
+    }
   }
 }

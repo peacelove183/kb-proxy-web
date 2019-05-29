@@ -107,6 +107,12 @@ export default {
         }
       }
     },
+    disable(v) {
+      if (this.editor) {
+        this.editor.setReadOnly(v)
+        v ? this.$refs.vue_editor.classList.add('ace_content_disable') : this.$refs.vue_editor.classList.remove('ace_content_disable')
+      }
+    }
   },
   methods: {
     px: function (n) {
@@ -158,7 +164,7 @@ export default {
           },
         }, [
           h('q-list', {
-            staticClass: 'bg-grey-3',
+            staticClass: 'bg-grey-1',
             props: {
               link: true,
               dense: true,
@@ -248,7 +254,7 @@ export default {
     },
     render_tools_bar(h) {
       return h('div', {
-        staticClass: 'row no-wrap bg-grey-3 items-center',
+        staticClass: 'row no-wrap bg-grey-1 items-center',
         style: {
           height: '40px'
 
@@ -292,7 +298,7 @@ export default {
       this.value_type = check_string_type(this.value)
       let vm = this;
       let lang = this.lang || 'text'
-      let theme = this.theme && this.theme === 'eclipse' ? this.theme : 'eclipse'
+      let theme = this.theme && this.theme !== 'eclipse' ? this.theme : 'eclipse'
       let editor_div = this.$refs.vue_editor
       let editor = vm.editor = ace.edit(editor_div)
 
@@ -336,9 +342,6 @@ export default {
       h('div', {
         staticClass: 'auto-height',
         ref: 'vue_editor',
-        attrs: {
-          id: 'editor_div_id'
-        },
         style: {
           width: width,
           height: height,

@@ -35,6 +35,13 @@ export default [
           page: () => import('../pages/mock/index')
         }
       },
+      {
+        path: '/mock_detail',
+        components: {
+          left, header, footer,
+          page: () => import('../pages/mock/mock_detail')
+        }
+      },
     ]
   },
   // {

@@ -4,6 +4,7 @@ import {ajax_get_response_by_id} from "../../api/proxy/response/response_detail_
 import store from '../../store'
 import {BodyTypeOptions} from "../../utils/repeater_dictionary";
 import {header_map_to_arr} from '../../utils/data_format_utils'
+
 export default {
   name: 'modal_request_detail',
   data: () => ({
@@ -87,11 +88,11 @@ export default {
               if (form_body) {
                 store.state.repeater.request_form = this.form_string_to_arr(this.request_detail.body)
                 store.state.repeater.request_json = null
-                store.state.repeater.body_type=BodyTypeOptions.FORM
+                store.state.repeater.body_type = BodyTypeOptions.FORM
               } else if (json_body) {
                 store.state.repeater.request_json = JSON.parse(this.request_detail.body)
                 store.state.repeater.request_form = []
-                store.state.repeater.body_type=BodyTypeOptions.JSON
+                store.state.repeater.body_type = BodyTypeOptions.JSON
               } else {
                 store.state.repeater.request_body = this.request_detail.body
                 store.state.repeater.request_json = null
@@ -106,11 +107,45 @@ export default {
               })
             }
           }
-        },[h('q-tooltip',{
-          props:{
-            offset:[5,5]
+        }, [h('q-tooltip', {
+          props: {
+            offset: [5, 5]
           }
-        },['重发'])])
+        }, ['重发'])])
+      ])
+    },
+    render_header_mock_btn(h) {
+      return h('div', {staticClass: 'q-pa-md cursor-pointer'}, [
+        h('q-icon', {
+          staticClass: 'icon-red-hover',
+          props: {
+            name: 'vpn_lock',
+            size: '20px',
+            color: 'primary'
+          },
+          nativeOn: {
+            click: () => {
+              console.log("request_detail:" + JSON.stringify(this.request_detail))
+              console.log("response_detail:" + JSON.stringify(this.response_detail))
+              store.state.mock.url = this.request_detail.url
+              store.state.mock.headers = header_map_to_arr(this.response_detail.header)
+              store.state.mock.method = this.request_detail.method
+              store.state.mock.code = this.request_detail.code
+              store.state.mock.response = this.response_detail.body
+
+              this.$router.push({
+                path: '/mock_detail',
+                query: {
+                  timestamp: (new Date()).getTime()
+                }
+              })
+            }
+          }
+        }, [h('q-tooltip', {
+          props: {
+            offset: [5, 5]
+          }
+        }, ['Mock'])])
       ])
     },
     render_header_close_btn(h) {
@@ -127,11 +162,11 @@ export default {
               this.show = false;
             }
           }
-        },[h('q-tooltip',{
-          props:{
-            offset:[5,5]
+        }, [h('q-tooltip', {
+          props: {
+            offset: [5, 5]
           }
-        },['关闭'])])
+        }, ['关闭'])])
       ])
     },
     render_general(h) {
@@ -346,6 +381,7 @@ export default {
           staticClass: 'absolute-right row flex'
         }, [
           this.render_header_repeater_btn(h),
+          this.render_header_mock_btn(h),
           this.render_header_close_btn(h)])
       ]),
       h('div', {

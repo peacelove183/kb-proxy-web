@@ -27,6 +27,7 @@ export default {
             height: '1px'
           }
         }),
+        this.$slots.end,
         this.collapse ? this.render_collapse_btn(h) : null
       ])
     },

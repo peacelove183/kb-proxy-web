@@ -22,7 +22,6 @@ export default {
   },
   render(h) {
     return h('div', {
-      staticClass: 'q-pb-md'
     }, [
       this.render_json_response(h)
     ])
