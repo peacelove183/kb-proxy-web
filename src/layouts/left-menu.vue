@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import {left_menu_data_admin,left_menu_data} from '../layouts/left_menu_data'
+  import {left_menu_data} from '../layouts/left_menu_data'
   import LeftMenuItem from '../layouts/left-menu-item'
   import QToolbarTitle from "quasar-framework/src/components/toolbar/QToolbarTitle";
 
@@ -26,11 +26,7 @@
     },
     computed: {
       menu_data() {
-        try {
-          return this.$store.state.user.type===2?left_menu_data_admin:left_menu_data;
-        } catch (e) {
-          return left_menu_data;
-        }
+        return left_menu_data;
       }
     }
   }

@@ -18,15 +18,7 @@ const left_menu_data = [
   },
 ]
 
-const left_menu_data_admin = [
-  {
-    label: '首页',
-    to: '/index',
-    icon: 'home ',
-  },
-]
-
-export {left_menu_data, left_menu_data_admin}
+export {left_menu_data}
 
 const route_menu_cache = {}
 
@@ -39,9 +31,8 @@ export const route2menu = (path) => {
     return route_menu_cache[path]
   }
   let res = []
-  let menu_data = store.state.user.type === 2 ? left_menu_data_admin : left_menu_data
-  for (let i in menu_data) {
-    let item = menu_data[i]
+  for (let i in left_menu_data) {
+    let item = left_menu_data[i]
     if (item.to === path && !item.ignore) {
       res.push(item)
     } else if (item.children) {

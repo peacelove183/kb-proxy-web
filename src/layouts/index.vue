@@ -21,15 +21,9 @@
     <q-page-container style="padding-top: 0px">
       <!--bread crumbs(path bar)-->
       <div class="flex no-wrap items-center">
-        <!--<q-btn-->
-          <!--v-if="$route.path !== '/'"-->
-          <!--class="q-mr-sm q-ml-sm text-primary back-btn q-mt-xs"-->
-          <!--flat dense icon="arrow_back_ios"-->
-          <!--@click="$router.back()"-->
-        <!--/>-->
-        <!--<keep-alive>-->
-          <!--<router-view name="path"></router-view>-->
-        <!--</keep-alive>-->
+        <keep-alive>
+          <router-view name="path"></router-view>
+        </keep-alive>
       </div>
       <!--main page-->
       <keep-alive>

@@ -1,7 +1,7 @@
 import left from '../layouts/left-menu'
 import header from '../layouts/header-menu'
 import footer from '../layouts/footer-menu'
-
+import mock_detail_path from '../pages/mock/mock_detail_path_bar'
 export default [
   {
     path: '',
@@ -38,7 +38,7 @@ export default [
       {
         path: '/mock_detail',
         components: {
-          left, header, footer,
+          left, header, footer,path:mock_detail_path,
           page: () => import('../pages/mock/mock_detail')
         }
       },
