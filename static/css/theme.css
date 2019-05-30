@@ -249,5 +249,11 @@ div::-webkit-scrollbar {
 }
 
 .pp-border-red {
-  border: 2px solid var(--q-color-negative);
+  border: 1px solid var(--q-color-negative);
+}
+
+.no-ripple .q-radial-ripple:after, .no-ripple .q-ripple-animation {
+  transition: none;
+  width: 0 !important;
+  height: 0 !important;
 }

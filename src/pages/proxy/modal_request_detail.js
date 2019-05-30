@@ -125,8 +125,6 @@ export default {
           },
           nativeOn: {
             click: () => {
-              console.log("request_detail:" + JSON.stringify(this.request_detail))
-              console.log("response_detail:" + JSON.stringify(this.response_detail))
               store.state.mock.url = this.request_detail.url
               store.state.mock.headers = header_map_to_arr(this.response_detail.header)
               store.state.mock.method = this.request_detail.method
@@ -263,8 +261,16 @@ export default {
             height: '13px'
           }
         }),
-        h('div', {staticClass: 'q-ml-md'}, [
+        h('div', {
+          staticClass: 'q-ml-md',
+          style: {
+            width:'100%'
+          }
+        }, [
           this.tab_name === 'response' && this.request_detail.mime_type && this.request_detail.mime_type.startsWith('image') ? h('img', {
+            style:{
+              maxWidth:'100%'
+            },
             attrs: {
               src: this.request_detail.url
             }

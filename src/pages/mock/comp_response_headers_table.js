@@ -15,17 +15,6 @@ export default {
       default: false
     }
   },
-  // watch: {
-  //   default_headers: {
-  //     immediate: true,
-  //     handler: function (nv, ov) {
-  //       console.log("nv:"+nv)
-  //       if (nv !== ov && nv !== this.headers) {
-  //         this.headers = nv
-  //       }
-  //     }
-  //   }
-  // },
   methods: {
     render_header_table_header(h) {
       return h('thead', [

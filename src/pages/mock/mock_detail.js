@@ -3,12 +3,12 @@ import PpSection from "../../components/elements/pp_section";
 import HistoryCatalog from './comp_history_catalog'
 import {required} from 'vuelidate/lib/validators'
 import {
-  ajax_get_mock_proxy_interface,
-  ajax_add_mock_proxy_interface,
-  ajax_update_mock_proxy_interface_by_id,
-  ajax_delete_mock_proxy_interface_by_id
-} from '../../api/mock/mock_proxy_interface_api'
-import {MethodOptions} from "../../utils/request_dictionary";
+  ajax_get_mock_proxy,
+  ajax_add_mock_proxy,
+  ajax_update_mock_proxy_by_id,
+  ajax_delete_mock_proxy_by_id
+} from '../../api/mock/mock_proxy_api'
+import {CodeOptions, MethodOptions} from "../../utils/request_dictionary";
 import ResponseHeadersTable from './comp_response_headers_table'
 import {header_arr_to_map, header_map_to_arr} from '../../utils/data_format_utils'
 import store from "../../store";
@@ -22,12 +22,17 @@ export default {
     model: {
       name: null,
       description: null,
-      method: 'GET'
+      headers: null,
+      only_uri: 0,
+      url: null,
+      method: 'GET',
+      code: 200
     }
   }),
   validations: {
     model: {
       name: {required},
+      url: {required}
     },
   },
   computed: {
@@ -41,7 +46,11 @@ export default {
           this.model = {
             name: null,
             description: null,
-            method: 'GET'
+            headers: null,
+            only_uri: 0,
+            url: null,
+            method: 'GET',
+            code: 200
           }
           this.edit = true
           this.new_create = true
@@ -70,6 +79,18 @@ export default {
           setTimeout(this.from_proxy_add, 300)
         }
       }
+    },
+    'model.headers': {
+      immediate: true,
+      handler: function (nv, ov) {
+        this.$refs.ResponseHeadersTable && this.$refs.ResponseHeadersTable.refresh_table(header_map_to_arr(nv))
+      }
+    },
+    'model.id': {
+      immediate: true,
+      handler: function (nv, ov) {
+        this.$refs.HistoryCatalog && this.$refs.HistoryCatalog.refresh_catalog(nv)
+      }
     }
   },
   methods: {
@@ -91,7 +112,10 @@ export default {
         h('div', {
           staticClass: 'col-grow'
         }, [h('div', {
-          staticClass: 'font-16 text-weight-bold'
+          staticClass: 'font-16 text-weight-bold ellipsis',
+          style: {
+            maxWidth: '600px'
+          }
         }, [
           this.edit ? h('q-input', {
             staticClass: 'pp-input-focus font-16',
@@ -111,7 +135,7 @@ export default {
                 this.model.name = v
               }
             }
-          }) : h('span', [this.model.name || '请输入Mock名称'])
+          }) : h('span', {}, [this.model.name || '请输入Mock名称'])
         ]),
           h('div', {
             staticClass: 'font-13',
@@ -168,6 +192,19 @@ export default {
           !this.new_create ? h('q-btn', {
             staticClass: 'pp-search-button no-shadow q-mr-sm',
             props: {
+              label: this.model.is_used === 0 ? '启用' : '禁用',
+              color: this.model.is_used === 0 ? 'positive' : 'warning',
+            },
+            on: {
+              click: () => {
+                this.model.is_used === 1 ? this.model.is_used = 0 : this.model.is_used = 1
+                this.update_Mock()
+              }
+            }
+          }) : null,
+          !this.new_create ? h('q-btn', {
+            staticClass: 'pp-search-button no-shadow q-mr-sm',
+            props: {
               label: '删除',
               color: 'negative'
             },
@@ -204,6 +241,9 @@ export default {
         }),
         h('q-input', {
           staticClass: 'pp-search-input col-grow no-shadow',
+          'class': {
+            'pp-border-red': this.$v.model.url.$error
+          },
           props: {
             value: this.model.url,
             hideUnderline: true,
@@ -236,7 +276,7 @@ export default {
     render_base_info(h) {
       return h(PpSection, {
         staticClass: 'font-13 text-dark q-mb-md',
-        props: {label: '时间信息', collapse: false}
+        props: {label: '其他信息', collapse: false}
       }, [this.render_base_info_detail(h)])
     },
     render_history_catalog(h) {
@@ -285,12 +325,14 @@ export default {
       })])
     },
     render_base_info_detail(h) {
-      return h('div', {staticClass: 'row no-wrap'}, [
+      return h('div', {staticClass: 'row no-wrap text-left'}, [
         h('div', {staticClass: 'col-6'}, [
+          this.render_checkbox_tr(h, '匹配URI：'),
           this.render_tr(h, '创建时间：', this.model.create_time),
 
         ]),
         h('div', {staticClass: 'col-6'}, [
+          this.render_select_tr(h, '响应状态'),
           this.render_tr(h, '更新时间：', this.model.update_time),
         ])
       ])
@@ -313,12 +355,76 @@ export default {
           }, '--')
       ])
     },
+    render_checkbox_tr(h, key) {
+      return h('tr', null, [
+        h('td', {
+          staticClass: 'q-pa-xs',
+          style: {
+            textAlign: 'left',
+            whiteSpace: 'nowrap',
+          }
+        }, key),
+        h('td', {}, [
+          this.edit ? h('q-checkbox', {
+            staticClass: 'no-ripple',
+            props: {
+              value: this.model.only_uri,
+              trueValue: 1,
+              falseValue: 0,
+              disable: !this.edit
+            },
+            on: {
+              input: (v) => {
+                this.model.only_uri = v
+              }
+            }
+          }) : h('q-icon', {
+            props: {
+              size: '21px',
+              color: this.model.only_uri ? 'blue-3' : 'faded',
+              name: this.model.only_uri ? 'check_box' : 'check_box_outline_blank'
+            }
+          })
+        ])
+      ])
+    },
+    render_select_tr(h, key) {
+      return h('tr', null, [
+        h('td', {
+          staticClass: 'q-pa-xs',
+          style: {
+            textAlign: 'left',
+            whiteSpace: 'nowrap',
+          }
+        }, key),
+        h('td', {}, [
+          h('q-select', {
+            staticClass: 'pp-search-input-sm no-shadow',
+            style: {
+              width: '100px',
+              marginRight: '3px'
+            },
+            props: {
+              value: this.model.code,
+              options: CodeOptions,
+              hideUnderline: true,
+              disable: !this.edit,
+              color: 'grey-1',
+              invertedLight: true,
+            },
+            on: {
+              input: (v) => {
+                this.model.code = v
+              }
+            }
+          })
+        ])
+      ])
+    },
     refresh_detail(id) {
-      ajax_get_mock_proxy_interface(id).then(d => {
+      ajax_get_mock_proxy(id).then(d => {
         if (d.status === 1) {
           d.data && (this.model = d.data)
-          this.model.headers && this.$refs.ResponseHeadersTable.refresh_table(header_map_to_arr(this.model.headers))
-          this.model.id && this.$refs.HistoryCatalog.refresh_catalog(this.model.id)
         }
       }).catch(e => {
         this.$q.err('获取MOCK信息异常')
@@ -326,13 +432,32 @@ export default {
     },
     save_Mock() {
       this.$v.model.name.$touch();
-      if (!this.$v.model.name.$error) {
+      this.$v.model.url.$touch();
+      if (!this.$v.model.name.$error && !this.$v.model.url.$error) {
         if (this.model.id) {
-          ajax_update_mock_proxy_interface_by_id(this.model.id, this.model).then(d => {
+          ajax_update_mock_proxy_by_id(this.model.id, this.model).then(d => {
+            d.status === 1 && this.$q.ok('保存成功！')
+            this.edit = false
+          }).catch(e => this.$q.err('保存失败！'))
+        } else {
+          ajax_add_mock_proxy(this.model).then(d => {
+            d.status === 1 && this.$q.ok('保存成功！')
+            this.edit = false
+            this.$router.push({path: '/mock_detail', query: {id: d.data}})
+          }).catch(e => this.$q.err('保存失败！'))
+        }
+      }
+    },
+    update_Mock() {
+      this.$v.model.name.$touch();
+      this.$v.model.url.$touch();
+      if (!this.$v.model.name.$error && !this.$v.model.url.$error) {
+        if (this.model.id) {
+          ajax_update_mock_proxy_by_id(this.model.id, this.model).then(d => {
             d.status === 1 && this.$q.ok('保存成功！')
           }).catch(e => this.$q.err('保存失败！'))
         } else {
-          ajax_add_mock_proxy_interface(this.model).then(d => {
+          ajax_add_mock_proxy(this.model).then(d => {
             d.status === 1 && this.$q.ok('保存成功！')
             this.$router.push({path: '/mock_detail', query: {id: d.data}})
           }).catch(e => this.$q.err('保存失败！'))
@@ -340,7 +465,7 @@ export default {
       }
     },
     delete_Mock() {
-      ajax_delete_mock_proxy_interface_by_id(this.model.id).then(d => {
+      ajax_delete_mock_proxy_by_id(this.model.id).then(d => {
         if (d.status === 1) {
           this.$q.ok('删除成功！')
           this.$router.push({path: '/mock'})

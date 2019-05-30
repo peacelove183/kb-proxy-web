@@ -1,6 +1,6 @@
 import {ajax_mock_proxy_history_search} from "../../api/mock/mock_proxy_history_api";
 import CatalogBase from '../../components/elements/MixinCatalogBase'
-import {MethodEnums} from "../../utils/request_dictionary";
+import {CodeEnums, MethodEnums} from "../../utils/request_dictionary";
 import ModelResponseDetail from './modal_response_detail'
 export default {
   name: 'comp_history_catalog',
@@ -16,6 +16,13 @@ export default {
     },
     table_columns: [
       {
+        name: 'method', align: 'left', field: 'method', label: '请求方式',
+        renderData: {style: {maxWidth: '100px', width: '100px'}, staticClass: 'text-tertiary'},
+        render: (h, props) => h('div', {
+          staticClass:'text-'+MethodEnums[props.value].color
+        }, [props.value || '--'])
+      },
+      {
         name: 'url', align: 'left', field: 'url', label: '链接',
         renderData: {style: {maxWidth: '300px', width: '300px'}, staticClass: 'text-tertiary'},
         render: (h, props) => h('div', {
@@ -26,16 +33,11 @@ export default {
         }, [props.value || '--'])
       },
       {
-        name: 'method', align: 'left', field: 'method', label: '请求方式',
-        renderData: {style: {maxWidth: '100px', width: '100px'}, staticClass: 'text-tertiary'},
-        render: (h, props) => h('div', {
-          staticClass:'text-'+MethodEnums[props.value].color
-        }, [props.value || '--'])
-      },
-      {
         name: 'code', align: 'left', field: 'code', label: '状态',
         renderData: {style: {maxWidth: '100px', width: '100px'}, staticClass: 'text-tertiary'},
-        render: (h, props) => h('span', [props.value || '--'])
+        render: (h, props) => h('span',{
+          staticClass:'text-'+CodeEnums[props.value].color
+        }, [props.value || '--'])
       },
       {
         name: 'create_time', align: 'left', field: 'create_time', label: '创建时间',
