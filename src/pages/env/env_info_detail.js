@@ -303,37 +303,36 @@ export default {
       this.env_list && (this.filter_env_list = this.env_list.filter(d => d.name.indexOf(this.kw) !== -1))
     },
     save_env_config() {
+      let vm =this
       if (this.selected_env.id) {
         ajax_update_env_info_by_id(this.selected_env.id, this.selected_env).then(d => {
           if (d.status === 1) {
-            this.$q.ok('修改环境成功！')
-            this.new = false
-            this.edit = false
-            this.selected_env=d.data
-            this.refresh_env_list()
+            vm.$q.ok('修改环境成功！')
+            vm.new = false
+            vm.selected_env=d.data
+            vm.refresh_env_list()
           }
         })
       } else {
         ajax_add_env_info(this.selected_env).then(d => {
           if (d.status === 1) {
-            this.$q.ok('新增环境成功！')
-            this.new = false
-            this.edit = false
-            this.selected_env=d.data
-            this.refresh_env_list()
+            vm.$q.ok('新增环境成功！')
+            vm.new = false
+            vm.selected_env=d.data
+            vm.refresh_env_list()
           }
         })
       }
     },
     update_env_status() {
+      let vm=this
       if (this.selected_env.status === 1) {
         ajax_stop_env_info(this.selected_env.id).then(d => {
           if (d.status === 1) {
             notify_ok("已停用！")
-            this.selected_env.status = -1
-            this.new = false
-            this.edit = false
-            this.refresh_env_list()
+            vm.selected_env.status = -1
+            vm.new = false
+            vm.refresh_env_list()
           }
         }).catch(e => {
         })
@@ -341,23 +340,22 @@ export default {
         ajax_start_env_info(this.selected_env.id).then(d => {
           if (d.status === 1) {
             notify_ok("已启用！")
-            this.selected_env.status = 1
-            this.new = false
-            this.edit = false
-            this.refresh_env_list()
+            vm.selected_env.status = 1
+            vm.new = false
+            vm.refresh_env_list()
           }
         }).catch(e => {
         })
       }
     },
     delete_env() {
+      let vm =this;
       ajax_delete_env_info_by_id(this.selected_env.id).then(d => {
         if (d.status === 1) {
           notify_ok("已删除！")
-          this.selected_env = new_env
-          this.new = false
-          this.edit = false
-          this.refresh_env_list()
+          vm.selected_env = new_env
+          vm.new = false
+          vm.refresh_env_list()
         }
       }).catch(e => {
       })
