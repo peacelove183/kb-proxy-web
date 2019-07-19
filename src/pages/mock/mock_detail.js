@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     Mock_id() {
-      if (this.$route.path === '/mock_detail') {
+      if (this.$route.path === '/mock/detail') {
         if (this.$route.query.id) {
           this.edit = false
           this.new_create = false
@@ -60,7 +60,7 @@ export default {
       return null
     },
     from_proxy_to_mock() {
-      if (this.$route.path == "/mock_detail")
+      if (this.$route.path == "/mock/detail")
         return (new Date()).getTime() >= this.$route.query.timestamp && (new Date()).getTime() - this.$route.query.timestamp <= 1 * 60 * 1000
       return false
     },
@@ -294,7 +294,7 @@ export default {
       }, [h(ResponseHeadersTable, {
         ref: 'ResponseHeadersTable',
         style: {
-          height: '350px'
+          height: '325px'
         },
         props: {
           default_headers: header_map_to_arr(this.model.headers) || [],
@@ -443,7 +443,7 @@ export default {
           ajax_add_mock_proxy(this.model).then(d => {
             d.status === 1 && this.$q.ok('保存成功！')
             this.edit = false
-            this.$router.push({path: '/mock_detail', query: {id: d.data}})
+            this.$router.push({path: '/mock/detail', query: {id: d.data}})
           }).catch(e => this.$q.err('保存失败！'))
         }
       }
@@ -459,7 +459,7 @@ export default {
         } else {
           ajax_add_mock_proxy(this.model).then(d => {
             d.status === 1 && this.$q.ok('保存成功！')
-            this.$router.push({path: '/mock_detail', query: {id: d.data}})
+            this.$router.push({path: '/mock/detail', query: {id: d.data}})
           }).catch(e => this.$q.err('保存失败！'))
         }
       }

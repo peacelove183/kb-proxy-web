@@ -16,6 +16,11 @@ const left_menu_data = [
     to: '/mock',
     icon: 'vpn_lock',
   },
+  {
+    label: '环境',
+    to: '/env',
+    icon: 'settings',
+  },
 ]
 
 export {left_menu_data}

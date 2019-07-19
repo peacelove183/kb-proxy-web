@@ -1,16 +1,31 @@
 import LazyInput from '../../components/elements/ComponentLazyInput'
 import QRCodeRender from './qrcode_render'
+import store from '../../store'
+import {ajax_start_proxy_server, ajax_stop_proxy_server} from "../../api/proxy/server/proxy_server_api";
 
 export default {
   name: 'compToolsHeader',
   data: () => ({
     method: [],
     code: [],
-    proxyStatus: true,
+    //proxyStatus: true,
     kw: null,
-    proxy_ip: '172.20.132.29',
-    proxy_port: 9999
   }),
+  computed: {
+    proxy_port() {
+      return store.state.user.id;
+    },
+    proxy_ip() {
+      return store.state.user.ip;
+    },
+    proxyStatus() {
+      return store.state.user.status === 1 ? true : false
+    }
+  },
+  watch: {
+    proxyStatus() {
+    }
+  },
   methods: {
     render_search(h) {
       return h('div', {}, [
@@ -135,10 +150,21 @@ export default {
 
     },
     proxy_status_switch() {
-      this.proxyStatus = !this.proxyStatus;
-      if (this.proxyStatus) {
+      if (!this.proxyStatus) {
+        ajax_start_proxy_server().then(d => {
+            if (d.status === 1) {
+              this.$store.dispatch('user/refreshUserInfo').then().catch()
+            }
+          }
+        ).catch()
         this.$emit('start')
+
       } else {
+        ajax_stop_proxy_server().then(d => {
+          if (d.status === 1) {
+            this.$store.dispatch('user/refreshUserInfo').then().catch()
+          }
+        }).catch()
         this.$emit('stop')
       }
     },
@@ -153,7 +179,7 @@ export default {
         height: '60px',
         width: '100%',
         marginLeft: '50px',
-        zIndex:'1',
+        zIndex: '1',
         position: 'fixed',
         marginBottom: '40px',
         top: '50px',
@@ -167,5 +193,5 @@ export default {
       h('div', {}, [this.render_search(h)]),
       h('div', {}, [this.render_tools_bar(h)]),
     ])
-  }
+  },
 }

@@ -1,5 +1,6 @@
 import {ajax_get_request_list, ajax_delete_requests} from "../../api/proxy/request/request_detail_api";
 import {CodeEnums} from "../../utils/request_dictionary";
+import store from "../../store";
 
 export default {
   name: 'compRequestCatalog',
@@ -10,8 +11,12 @@ export default {
     interval_id: null,
     request: {},
     kw: null,
-    proxyStatus: true
   }),
+  computed: {
+    proxyStatus() {
+      return store.state.user.status === 1 ? true : false
+    }
+  },
   methods: {
     render_request_table_header(h) {
       return h('thead', [
@@ -140,11 +145,9 @@ export default {
       })
     },
     start_request_list_interval() {
-      this.proxyStatus = true
-      !this.interval_id && (this.interval_id = setInterval(this.refresh_catalog_interval, 1000))
+       !this.interval_id && (this.interval_id = setInterval(this.refresh_catalog_interval, 1000))
     },
     stop_request_list_interval() {
-      this.proxyStatus = false
       clearInterval(this.interval_id)
       this.interval_id = null
     },

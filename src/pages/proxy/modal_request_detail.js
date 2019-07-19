@@ -132,7 +132,7 @@ export default {
               store.state.mock.response = this.response_detail.body
 
               this.$router.push({
-                path: '/mock_detail',
+                path: '/mock/detail',
                 query: {
                   timestamp: (new Date()).getTime()
                 }

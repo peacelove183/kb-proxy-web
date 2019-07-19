@@ -45,19 +45,9 @@
         miniWidth: 50
       }
     },
-    computed: {
-      // showMenu() {
-      //   return this.$store.state.main.show_menu;
-      // }
-    },
-    methods: {
-      // clickDraw() {
-      //   this.$store.state.main.show_menu = false;
-      // }
-    },
-    // mounted() {
-    //   this.$store.dispatch('user/getUserInfo').then().catch();
-    // }
+    mounted() {
+      this.$store.dispatch('user/getUserInfo').then().catch();
+    }
   }
 </script>
 

@@ -8,38 +8,33 @@
       <span class="text-weight-bold q-ml-md">代理工具平台</span>
 
       <div class="absolute-right">
-        <!--<q-btn class="full-height shadow-0"-->
-        <!--@click.native=user_info_btn_click-->
-        <!--icon="person">-->
-        <!--<q-tooltip :offset="[5,5]">{{user_info_btn_tip()}}</q-tooltip>-->
-        <!--</q-btn>-->
-        <!--<q-btn v-show=isAdmin-->
-        <!--class="full-height shadow-0"-->
-        <!--icon="settings"-->
-        <!--&gt;-->
-        <!--<q-tooltip :offset="[5,5]">配置</q-tooltip>-->
-        <!--</q-btn>-->
-        <!--<q-btn class="shadow-0 full-height"-->
-               <!--size="xl"-->
-               <!--icon="get_app">-->
-          <!--<q-tooltip :offset="[5,5]">获取证书</q-tooltip>-->
-          <!--<q-popover>-->
-            <!--<div class="q-pa-md" id="qrCode" ref="qrCodeDiv"/>-->
-            <!--<div class="items-center row flex-center q-pl-md q-pr-md q-pb-md" >-->
-              <!--<q-btn label="点击下载" color="primary" style="width: 100%"  v-on:click="this.download_ca"/>-->
-            <!--</div>-->
-          <!--</q-popover>-->
-        <!--</q-btn>-->
+        <q-btn class="full-height shadow-0"
+               @click.native=user_info_btn_click
+               size="lg"
+               icon="account_circle">
+          <q-tooltip :offset="[5,5]">{{user_info_btn_tip()}}</q-tooltip>
+          <q-popover>
+            <user-info ref="UserInfo"/>
+          </q-popover>
+        </q-btn>
+        <q-btn class="full-height shadow-0"
+               icon="exit_to_app"
+               size="lg"
+               @click.native="$store.dispatch('user/logout')"
+        >
+          <q-tooltip :offset="[5,5]">退出</q-tooltip>
+        </q-btn>
       </div>
     </q-toolbar>
   </div>
 </template>
 <script>
+  import UserInfo from '../pages/user/info'
 
   export default {
     name: 'header-menu',
     mixins: [],
-    components: {},
+    components: {UserInfo},
     props: {
       defaultMiniMenu: false,
     },
@@ -50,46 +45,27 @@
       }
     },
     computed: {
-      // showMenu() {
-      //   return this.$store.state.main.show_menu;
-      // }
-      // userName () {
-      //   return this.$store.state.user.login_name
-      // },
-      // isAdmin () {
-      //   return this.$store.state.user.type === 2 ? true : false
-      // }
+      userName() {
+        return this.$store.state.user.nick_name
+      },
     },
     methods: {
-      // user_info_btn_click () {
-      //   if (this.userName) {
-      //     //this.$router.push({path: '/user/update'})
-      //   } else {
-      //     this.$router.push(({path: '/login'}))
-      //   }
-      // },
-      // user_info_btn_tip () {
-      //   if (this.userName) {
-      //     return '欢迎，' + this.userName
-      //   } else {
-      //     return '登录/注册'
-      //   }
-      // }
-      // bindQRCode: function () {
-      //   new QRCode(this.$refs.qrCodeDiv, {
-      //     text: this.ca_url,
-      //     width: 200,
-      //     height: 200,
-      //     colorDark: "#333333", //二维码颜色
-      //     colorLight: "#ffffff", //二维码背景色
-      //     correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
-      //   })
-      // },
-      // download_ca(){
-      //   window.location.href=this.ca_url
-      // }
+      user_info_btn_click() {
+        if (this.userName) {
+          this.$refs.UserInfo.refresh_user_info();
+        } else {
+          this.$router.push(({path: '/login'}))
+        }
+      },
+      user_info_btn_tip() {
+        if (this.userName) {
+          return '欢迎，' + this.userName
+        } else {
+          return '登录/注册'
+        }
+      }
     },
-    mounted(){
+    mounted() {
       this.$nextTick(this.bindQRCode)
     }
   }

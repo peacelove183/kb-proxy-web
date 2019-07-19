@@ -13,9 +13,12 @@
 
   export default {
     name: "QRCodeRender",
-    data: () => ({
-      ca_url: 'http://172.20.132.29:8080/static/ca/littleproxy-mitm.pem'
-    }),
+    data: () => ({}),
+    computed: {
+      ca_url() {
+        return 'http://' + this.$store.state.user.ip + '/static/ca/littleproxy-mitm.pem'
+      }
+    },
     methods: {
       bindQRCode: function () {
         new QRCode(this.$refs.qrCodeDiv, {

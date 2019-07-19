@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Quasar from './plugins/quasar'
-import store from './store'
+import store from './store/index'
 import '../static/css/import_css'
 import Validate from './plugins/vuelidate'
 import PpNotify from './plugins/PpNotify'
@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 const app = ({
   el: '#app',
   router,
+  store,
   components: {App},
   template: '<App/>'
 });
