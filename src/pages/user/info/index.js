@@ -283,7 +283,7 @@ export default {
     update_user_info() {
       let model = {
         port: this.new_port,
-        nick_name: this.nick_name,
+        nick_name: this.user_info.nick_name,
         new_pwd: this.new_pwd,
         old_pwd: this.old_pwd
       }
