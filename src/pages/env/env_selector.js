@@ -40,7 +40,7 @@ export default {
     },
     render_filter_input(h) {
       return h(LazyInput, {
-        staticClass: 'pp-search-input q-mb-sm',
+        staticClass: 'pp-search-input',
         props: {value: this.kw, placeholder: '按名称查找'},
         on: {
           input: v => {
@@ -164,7 +164,9 @@ export default {
           ref: 'popup',
           directives: [{name: 'close-overlay'}]
         }, [
-          h('div', [this.render_filter_input(h)]),
+          h('div',{
+            staticClass:'q-pa-sm'
+          }, [this.render_filter_input(h)]),
           h('div', [this.render_env_list(h)])
         ]) : null
       ]
