@@ -7,7 +7,10 @@
         name="public"/>
       <span class="text-weight-bold q-ml-md">代理工具平台</span>
 
-      <div class="absolute-right">
+      <div class="absolute-right row">
+        <env-selector ref="EnvSelector"
+        @click.native="env_selector_click"></env-selector>
+
         <q-btn class="full-height shadow-0"
                @click.native=user_info_btn_click
                size="lg"
@@ -30,11 +33,11 @@
 </template>
 <script>
   import UserInfo from '../pages/user/info'
-
+  import EnvSelector from '../pages/env/env_selector'
   export default {
     name: 'header-menu',
     mixins: [],
-    components: {UserInfo},
+    components: {UserInfo,EnvSelector},
     props: {
       defaultMiniMenu: false,
     },
@@ -63,6 +66,9 @@
         } else {
           return '登录/注册'
         }
+      },
+      env_selector_click(){
+        this.$refs.EnvSelector.refresh_env_list()
       }
     },
     mounted() {

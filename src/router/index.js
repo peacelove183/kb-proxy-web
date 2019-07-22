@@ -13,7 +13,7 @@ const router = new Router({
 })
 
 const login = (to, from, next) => {
-  if (!localStorage.get('isLogin') && to.path !== '/login') {
+  if (!localStorage.get('isLogin') && (to.path !== '/login' && to.path !== '/register')) {
     cache_route.path = cache_route.path || to.path;
     cache_route.query = cache_route.query || to.query;
     cache_route.params = cache_route.params || to.params;
@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
 
     let cache_route_ = extend(true, {}, cache_route);
     cache_route.path = cache_route.query = cache_route.params = null;
-    cache_route_.path !== '/login' ? next(cache_route_) : next();
+    cache_route_.path !== '/login' && cache_route_.path !== '/register' ? next(cache_route_) : next();
   }
   next()
 });

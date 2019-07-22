@@ -16,7 +16,7 @@
     data: () => ({}),
     computed: {
       ca_url() {
-        return 'http://' + this.$store.state.user.ip + '/static/ca/littleproxy-mitm.pem'
+        return 'http://' + this.$store.state.user.ip + ':8002/static/ca/littleproxy-mitm.pem'
       }
     },
     methods: {
@@ -31,7 +31,7 @@
         })
       },
       download_ca() {
-        window.location.href = this.ca_url
+        window.open(this.ca_url,'_blank')
       }
     },
     mounted() {

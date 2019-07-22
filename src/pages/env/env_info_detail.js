@@ -1,16 +1,15 @@
 import {
-  ajax_env_info_search,
-  ajax_update_env_info_by_id,
   ajax_add_env_info,
+  ajax_delete_env_info_by_id,
+  ajax_env_info_search,
   ajax_start_env_info,
   ajax_stop_env_info,
-  ajax_delete_env_info_by_id
+  ajax_update_env_info_by_id
 } from '../../api/env/env_info_api'
 import PpSection from "../../components/elements/pp_section";
 import Editor from "../../plugins/editor/host-editor/host-editor";
 
 import LazyInput from '../../components/elements/ComponentLazyInput';
-import {required} from "vuelidate/lib/validators";
 import {notify_ok} from "../../plugins/PpNotify";
 
 const new_env = {
@@ -33,21 +32,19 @@ export default {
   name: 'env_info_detail',
   data: () => ({
     new: false,
-    env_list: [],
     edit: true,
     filter_env_list: [],
-    selected_env: {
-      name: null,
-      hosts: null,
-      id: null
-    },
     kw: null,
   }),
-  validations: {
-    selected_env: {
-      name: {required},
+  computed: {
+    env_list() {
+      return this.$store.state.env.env_list
     },
+    selected_env() {
+      return this.$store.state.env.selected_env
+    }
   },
+  validations: {},
   methods: {
     render_left_detail(h) {
       return h('div', {}, [
@@ -73,7 +70,7 @@ export default {
           click: () => {
             this.new = true
             this.edit = true
-            this.selected_env = new_env
+            this.$store.state.env.selected_env = new_env
           }
         }
       })
@@ -87,7 +84,7 @@ export default {
       }, [this.render_env_catalog(h)])
     },
     render_env_catalog(h) {
-      !this.new && this.selected_env.name == null && (this.selected_env = this.filter_env_list.length <= 0 ? new_env : this.filter_env_list[0])
+      !this.new && this.selected_env.name == null && (this.$store.state.env.selected_env = this.filter_env_list.length <= 0 ? new_env : this.filter_env_list[0])
       return h('div', {
         staticClass: 'font-13 text-dark scroll pp-border-3 bg-grey-1',
         style: {
@@ -103,15 +100,14 @@ export default {
       return h('div', {
         staticClass: 'q-pl-sm q-pr-sm flex no-wrap justify-between cursor-pointer text-left text-primary',
         'class': {
-          'pp-selected-bg-grey-3': this.env && this.env.id === env.id ? true : false,
-          'bg-blue-6 text-white': this.selected_env.id === env.id
+          'bg-blue-5 text-white': this.selected_env && this.selected_env.id === env.id ? true : false,
         },
         style: {lineHeight: '36px'},
         on: {
           click: () => {
             this.new = false
             this.edit = false
-            this.selected_env = env
+            this.$store.state.env.selected_env = env
           }
         },
       }, [
@@ -128,6 +124,9 @@ export default {
           }, [env.name]),
           h('span', {
             staticClass: 'q-mr-md col-grow text-right text-' + EnvStatusEnum[env.status].color,
+            'class': {
+              'text-white': this.selected_env.id === env.id ? true : false
+            }
           }, [EnvStatusEnum[env.status].label]),
         ])])
       ])
@@ -194,7 +193,7 @@ export default {
           this.edit ? h('q-input', {
             staticClass: 'pp-input-focus font-16',
             'class': {
-              'pp-border-red': this.$v.selected_env.name.$error
+              'pp-border-red': this.selected_env.name ? false : true
             },
             style: {
               width: '300px'
@@ -291,7 +290,10 @@ export default {
     refresh_env_list() {
       ajax_env_info_search().then(d => {
         if (d.status === 1) {
-          this.filter_env_list = this.env_list = d.data || []
+          this.$store.state.env.env_list = d.data || []
+          this.filter_env_list = this.env_list.sort((a, b) => {
+            return b.status - a.status
+          })
         } else {
           this.$q.err('获取环境列表失败！')
         }
@@ -303,13 +305,13 @@ export default {
       this.env_list && (this.filter_env_list = this.env_list.filter(d => d.name.indexOf(this.kw) !== -1))
     },
     save_env_config() {
-      let vm =this
+      let vm = this
       if (this.selected_env.id) {
         ajax_update_env_info_by_id(this.selected_env.id, this.selected_env).then(d => {
           if (d.status === 1) {
             vm.$q.ok('修改环境成功！')
             vm.new = false
-            vm.selected_env=d.data
+            vm.$store.state.env.selected_env = d.data
             vm.refresh_env_list()
           }
         })
@@ -318,19 +320,19 @@ export default {
           if (d.status === 1) {
             vm.$q.ok('新增环境成功！')
             vm.new = false
-            vm.selected_env=d.data
+            vm.$store.state.env.selected_env = d.data
             vm.refresh_env_list()
           }
         })
       }
     },
     update_env_status() {
-      let vm=this
+      let vm = this
       if (this.selected_env.status === 1) {
         ajax_stop_env_info(this.selected_env.id).then(d => {
           if (d.status === 1) {
             notify_ok("已停用！")
-            vm.selected_env.status = -1
+            vm.$store.state.env.selected_env.status = -1
             vm.new = false
             vm.refresh_env_list()
           }
@@ -340,7 +342,8 @@ export default {
         ajax_start_env_info(this.selected_env.id).then(d => {
           if (d.status === 1) {
             notify_ok("已启用！")
-            vm.selected_env.status = 1
+            vm.$store.state.env.selected_env.status = 1
+            vm.$store.state.env.active_env=this.selected_env
             vm.new = false
             vm.refresh_env_list()
           }
@@ -349,11 +352,11 @@ export default {
       }
     },
     delete_env() {
-      let vm =this;
+      let vm = this;
       ajax_delete_env_info_by_id(this.selected_env.id).then(d => {
         if (d.status === 1) {
           notify_ok("已删除！")
-          vm.selected_env = new_env
+          vm.$store.state.env.selected_env = new_env
           vm.new = false
           vm.refresh_env_list()
         }

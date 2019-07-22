@@ -19,6 +19,10 @@ export default {
       staticClass: 'pp-login-bg',
       style: {
         marginTop: '-60px',
+      },
+      on:{
+        keyup:
+          e => e.key === 'Enter' && store.dispatch('user/login', this.model),
       }
     }, [
       h('div', {
@@ -149,8 +153,9 @@ export default {
               if (this.remember_me) {
                 this.remember_user()
               }
-              store.dispatch('user/login',this.model)
-            }
+              store.dispatch('user/login', this.model)
+            },
+
           }
 
         }, '登 录'),

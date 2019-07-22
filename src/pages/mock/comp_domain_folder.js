@@ -87,7 +87,7 @@ export default {
           minHeight: '50px'
         },
         'class': {
-          'pp-selected-bg-blue-3': this.active,
+          'bg-blue-5': this.active,
           'bg-grey-1': !this.active
         },
       }, [
