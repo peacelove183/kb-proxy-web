@@ -10,13 +10,13 @@
 
 <script>
   import QRCode from 'qrcodejs2'
-
+  import store from '../../store'
   export default {
     name: "QRCodeRender",
     data: () => ({}),
     computed: {
       ca_url() {
-        return 'http://' + this.$store.state.user.ip + ':8002/static/ca/littleproxy-mitm.pem'
+        return 'http://' + store.state.user.ip + ':8002/static/ca/littleproxy-mitm.pem'
       }
     },
     methods: {
