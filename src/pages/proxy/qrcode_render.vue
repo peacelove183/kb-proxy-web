@@ -16,7 +16,7 @@
     data: () => ({}),
     computed: {
       ca_url() {
-        return 'http://' + store.state.user.ip + ':8002/static/ca/littleproxy-mitm.pem'
+        return 'http://' + store.state.user.ip + '/static/ca/littleproxy-mitm.pem'
       }
     },
     methods: {
